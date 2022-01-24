@@ -38,10 +38,10 @@ services:
       - shimmerdb:/tmp/mainnetdb
       - peerdb:/tmp/peerdb
     ports:
-      - "8080:8080/tcp" # web API
-      - "8081:8081/tcp" # dashboard
+      - "9080:8080/tcp" # web API
+      - "9081:8081/tcp" # dashboard
       - "9000:9000/tcp" # analysis dashboard
-      - "6081:6061/tcp" # pprof
+      - "10081:6061/tcp" # pprof
     expose:
       - 1888/tcp # analysis server
     networks:
