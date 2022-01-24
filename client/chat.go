@@ -3,7 +3,7 @@ package client
 import (
 	"net/http"
 
-	"github.com/iotaledger/goshimmer/plugins/chat"
+	"github.com/iotaledger/goshimmer/packages/jsonmodels"
 )
 
 const (
@@ -11,8 +11,8 @@ const (
 )
 
 // ChatMsg sends the given data (payload) by creating a message in the backend.
-func (api *GoShimmerAPI) SendChatMessage(request *chat.Request) error {
-	res := &chat.Response{}
+func (api *GoShimmerAPI) SendChatMessage(request *jsonmodels.ChatRequest) error {
+	res := &jsonmodels.ChatResponse{}
 	if err := api.do(http.MethodPost, routeChat,
 		request, res); err != nil {
 		return err

@@ -9,7 +9,6 @@ import (
 	"github.com/iotaledger/goshimmer/packages/jsonmodels"
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/goshimmer/packages/tangle/payload"
-	"github.com/iotaledger/goshimmer/plugins/chat"
 )
 
 // BasicPayload contains content title and bytes
@@ -119,7 +118,7 @@ func ProcessPayload(p payload.Payload) interface{} {
 		return processDrngPayload(p)
 	case chat2.Type:
 		chatPayload := p.(*chat2.Payload)
-		return chat.Request{
+		return jsonmodels.ChatRequest{
 			From:    chatPayload.From,
 			To:      chatPayload.To,
 			Message: chatPayload.Message,
