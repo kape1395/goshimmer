@@ -1,10 +1,12 @@
 package client
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/iotaledger/hive.go/backoff"
@@ -101,6 +103,7 @@ func (n *Client) connect(dial DialFunc, msgChopper *chopper.Chopper) bool {
 	// send client ID
 	if err := n.send(&txstream.MsgSetID{ClientID: n.clientID}, bconn, msgChopper); err != nil {
 		n.log.Errorf("sending client ID to server: %v", err)
+		return true
 	}
 
 	// r/w loop
@@ -108,6 +111,11 @@ func (n *Client) connect(dial DialFunc, msgChopper *chopper.Chopper) bool {
 		select {
 		case msg := <-n.chSend:
 			if err := n.send(msg, bconn, msgChopper); err != nil {
+				if errors.Is(err, syscall.EPIPE) {
+					// Handle the "broken pipe" error by reconnecting to the server.
+					n.log.Errorf("sending message to server (%T): %v, going to reconnect.", msg, err)
+					return true
+				}
 				n.log.Errorf("sending message to server (%T): %v", msg, err)
 			}
 		case d := <-dataReceived:
